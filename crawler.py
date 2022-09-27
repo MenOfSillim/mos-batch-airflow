@@ -1,9 +1,11 @@
-from datetime import datetime
 import json
 import requests
+from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+
+from databaseConfig import DBHandler
 
 # DAG 설정
 dag = DAG(
@@ -44,8 +46,24 @@ def send_api(path, method):
         print(i)
 
 
+# https://popcorn16.tistory.com/122
+
+
+def conn_mongo():
+    mongo = DBHandler()
+    print('=============================== Test ===============================')
+
+    # print(mongo.insert_item_one({"test": 1}, 'crawling', 'webtoon'))
+    result = mongo.find_item(None, 'crawling', 'webtoon')
+    for a in result:
+        print(a)
+
+    print('=============================== Test ===============================')
+
+
 def http_call():
     print("2번째")
+
 
 # DAG Task 작성
 send_api = PythonOperator(
@@ -65,6 +83,11 @@ http_call = PythonOperator(
     dag=dag
 )
 
-# send_api >> http_call
-send_api
+conn_mongo = PythonOperator(
+    task_id='conn_mongo',
+    python_callable=conn_mongo,
+    dag=dag
+)
 
+# send_api >> http_call
+conn_mongo
