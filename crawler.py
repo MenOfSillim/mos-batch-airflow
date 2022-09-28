@@ -50,11 +50,11 @@ def send_api(path, method):
 
 
 def conn_mongo():
-    mongo = DBHandler()
+    mongo = DBHandler('crawling', 'webtoon')
     print('=============================== Test ===============================')
 
     # print(mongo.insert_item_one({"test": 1}, 'crawling', 'webtoon'))
-    result = mongo.find_item(None, 'crawling', 'webtoon')
+    result = mongo.find_item(None)
     for a in result:
         print(a)
 
