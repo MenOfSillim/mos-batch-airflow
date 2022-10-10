@@ -1,7 +1,6 @@
 import multiprocessing
 import requests
 from multiprocessing import Pool
-from config.database_config import DBHandler
 
 webtoon_detail_hash = 'GQ6i3oIUv1yffrSpxjRGE'
 webtoon_list_url = 'https://page.kakao.com/graphql'
