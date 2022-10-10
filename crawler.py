@@ -1,7 +1,5 @@
-# import json
-# import requests
 from datetime import datetime
-from crawler.kakao_page import request_webtoon_list
+from crawler.kakao_page import do_paraller_crawler
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
@@ -15,45 +13,17 @@ dag = DAG(
     tags=['crawling'],
     schedule_interval='@once')
 
-# graphql
-# https://intrepidgeeks.com/tutorial/sending-graphql-requests-from-the-command-line-using-curl
-# 카카오페이지 :13054개
-# https://page.kakao.com/menu/10/screen/14
+
+# https://page.kakao.com/menu/10/screen/14 : 카카오페이지 :13054개
+# https://popcorn16.tistory.com/122 : mongoDB 연동
 
 def send_api(path, method):
-
-    request_webtoon_list()
-    # API_HOST = "https://gateway-kw.kakao.com"
-    # url = API_HOST + path
-    # headers = {'Content-Type': 'application/json', 'charset': 'UTF-8', 'Accept': '*/*'}
-    # body = {
-    #     "key1": "value1",
-    #     "key2": "value2"
-    # }
-    #
-    # try:
-    #     if method == 'GET':
-    #         response = requests.get(url, headers=headers)
-    #     elif method == 'POST':
-    #         response = requests.post(url, headers=headers, data=json.dumps(body, ensure_ascii=False, indent="\t"))
-    #
-    #     # print("response status %r" % response.status_code)
-    #     # print("response text %r" % response.text)
-    # except Exception as ex:
-    #     print(ex)
-    # print('한국말 보고싶어')
-    # # 이미지는 확장자 webp 붙여야됨
-    # # 썸네일 이미지 featuredCharacterImageA
-    # # 썸네일 이미지 featuredCharacterImageB
-    # resultJson = response.json()
-    # sections = resultJson['data']['sections']
-    #
-    # print(sections[0]['cardGroups'][0]['cards'][0]['content'])
-    # # for i in sections:
-    # #     print(i)
-
-
-# https://popcorn16.tistory.com/122
+    mongo = DBHandler('crawling', 'webtoon')
+    # mongo.insert_item_many(do_paraller_crawler(0, 100))
+    # mongo.insert_item_many(do_paraller_crawler(100, 200))
+    # mongo.insert_item_many(do_paraller_crawler(200, 300))
+    # mongo.insert_item_many(do_paraller_crawler(300, 400))
+    mongo.insert_item_many(do_paraller_crawler(400, 543))
 
 
 def conn_mongo():
@@ -98,7 +68,6 @@ conn_mongo = PythonOperator(
 
 # send_api >> http_call
 conn_mongo
-
 
 # 탑툰 : 태그 크롤링
 # curl 'https://page.kakao.com/graphql' \
