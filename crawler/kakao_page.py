@@ -12,7 +12,7 @@ def do_paraller_crawler(start, end):
     cpu_count = multiprocessing.cpu_count()
     webtoon = manager.list()
     pool = Pool(cpu_count)
-    response = pool.starmap(request_webtoon_list, [(i,  webtoon) for i in range(start, end)])
+    response = pool.starmap(request_webtoon_list, [(i, webtoon) for i in range(start, end)])
 
     print('============ 결과 ===============')
     return list(response.pop(0))
@@ -48,7 +48,6 @@ def make_model_items(content, webtoon):
 
         print(webtoon_dict)
         webtoon.append(webtoon_dict)
-
 
 
 def request_webtoon_detail(series_id):
