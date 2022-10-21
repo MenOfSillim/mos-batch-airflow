@@ -4,18 +4,16 @@ import time
 
 from bs4 import BeautifulSoup
 
+webtoon = []
 url_prefix = 'https://comic.naver.com'
 webtoon_creation_url = 'https://comic.naver.com/webtoon/creation'
 
 
 def do_crawling():
-    webtoon = []
-    response = request_webtoon_list(webtoon)
-
-    return list(response.pop(0))
+    return request_webtoon_list()
 
 
-def request_webtoon_list(webtoon):
+def request_webtoon_list():
     response = requests.get(webtoon_creation_url)
     if response.status_code == 200:
         i = 0
@@ -42,12 +40,12 @@ def request_webtoon_list(webtoon):
             if i % 5 == 0:
                 print('Index : [%g] ' % i)
             # Test
-        return webtoon
+            # # 50개까지만 하고 스탑
+            if i == 50:
+                print(webtoon)
+                return
+        return
 
-        # # 50개까지만 하고 스탑
-        # if i == 50:
-        #     print(webtoon)
-        #     return webtoon
 
 
 def request_webtoon_detail(url):
