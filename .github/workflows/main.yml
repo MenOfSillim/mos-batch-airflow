@@ -1,0 +1,28 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run pwd
+        run: pwd
+
+      - name: "context"
+        env:
+          COMMIT_ID: ${{ github.sha }}
+        run: echo "Commit id => $COMMIT_ID"
+
+      - name: "Connect MenOfSillim"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_SSH_ID }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            cd /mnt/storage1/airflow/dags
+            git pull origin master
+            git show
