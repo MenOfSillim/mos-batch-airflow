@@ -16,8 +16,7 @@ dag = DAG(
 def crawling_naver():
     print('=============================== Crawling Start ===============================')
     mongo = DBHandler('crawling', 'webtoon')
-    print(do_crawling())
-    # mongo.insert_item_many()
+    mongo.insert_item_many(do_crawling())
     print('=============================== Crawling End ===============================')
 
 

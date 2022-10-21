@@ -39,11 +39,6 @@ def request_webtoon_list():
             webtoon.append(webtoon_dict)
             if i % 5 == 0:
                 print('Index : [%g] ' % i)
-            # Test
-            # # 50개까지만 하고 스탑
-            if i == 50:
-                print(webtoon)
-                return
         return
 
 
