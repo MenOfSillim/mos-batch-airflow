@@ -6,6 +6,36 @@ docker cp /mnt/storage1/airflow/webtoon.csv kafka-mongo:/data/
 
 mongoimport --db crawling --collection webtoon --type csv --headerline --drop --file webtoon-headline.csv
 ```
+```sql
+-- 쿼리 정리
+-- https://medium.com/@andrewhharmon/apache-airflow-using-pycharm-and-docker-for-remote-debugging-b2d1edf83d9d
+-- https://sjh836.tistory.com/100
+
+-- DDL : collection 탐색
+show collections;
+use crawling;
+
+db.createCollection("webtoon", {
+    capped: true,
+    size : 6142800,
+    max : 10000
+})
+
+-- capped: true, : 고정된 크기를 가진 컬렉션 활성화
+-- autoIndex: true, _id에 index 자동 생성, deprecated 예정
+-- size : 6142800, : collection의 용량이며 byte단위
+-- max : 10000 : document 갯수
+
+
+-- update : db 전체 업데이트
+db.getCollection('webtoon')
+  .updateMany( {}, { $set: {"platform":'Kakao-Page'}}, false, true)
+
+-- select : 해당 조건 갯수 구하기
+db.webtoon.countDocuments({platform:'Naver'})
+
+```
+
 
 ## 참고 사이트
 - https://page.kakao.com/menu/10/screen/14 : 카카오페이지 :13054개
