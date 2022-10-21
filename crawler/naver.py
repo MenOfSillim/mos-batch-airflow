@@ -10,7 +10,8 @@ webtoon_creation_url = 'https://comic.naver.com/webtoon/creation'
 
 
 def do_crawling():
-    return request_webtoon_list()
+    request_webtoon_list()
+    return webtoon
 
 
 def request_webtoon_list():
@@ -40,7 +41,6 @@ def request_webtoon_list():
             if i % 5 == 0:
                 print('Index : [%g] ' % i)
         return
-
 
 
 def request_webtoon_detail(url):

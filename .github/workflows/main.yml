@@ -26,3 +26,6 @@ jobs:
             cd /mnt/storage1/airflow/dags
             git pull
             git show
+            cd /mnt/storage1/airflow/conf
+            docker-compose down
+            docker-compose up -d
