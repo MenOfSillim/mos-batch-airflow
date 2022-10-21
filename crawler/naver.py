@@ -1,8 +1,6 @@
-import multiprocessing
 import random
 import requests
 import time
-from multiprocessing.pool import ThreadPool
 
 from bs4 import BeautifulSoup
 
@@ -11,10 +9,8 @@ webtoon_creation_url = 'https://comic.naver.com/webtoon/creation'
 
 
 def do_crawling():
-    manager = multiprocessing.Manager()
-    webtoon = manager.list()
-    pool = ThreadPool(5)
-    response = pool.map(request_webtoon_list, [webtoon])
+    webtoon = []
+    response = request_webtoon_list(webtoon)
 
     return list(response.pop(0))
 
