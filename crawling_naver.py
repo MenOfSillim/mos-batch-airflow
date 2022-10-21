@@ -2,7 +2,6 @@ import datetime
 from crawler.naver import do_crawling
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
 from config.database_config import DBHandler
 
 # DAG 설정
@@ -14,12 +13,10 @@ dag = DAG(
     schedule_interval='@once')
 
 
-def crawling_naver(start_index, end_index):
+def crawling_naver():
     print('=============================== Crawling Start ===============================')
-    print(start_index)
-    print(end_index)
-    # mongo = DBHandler('crawling', 'webtoon')
-    do_crawling()
+    mongo = DBHandler('crawling', 'webtoon')
+    mongo.insert_item_many(do_crawling())
     print('=============================== Crawling End ===============================')
 
 
@@ -28,7 +25,6 @@ crawling_naver = PythonOperator(
     task_id='task_crawling_naver',
     # python_callable param points to the function you want to run
     python_callable=crawling_naver,
-    op_args=[0, 100],
     # dag param points to the DAG that this task is a part of
     dag=dag
 )

@@ -1,45 +1,55 @@
+import multiprocessing
+from multiprocessing import Pool
 import time, random, requests
 from bs4 import BeautifulSoup
 
 url_prefix = 'https://comic.naver.com'
+webtoon_creation_url = 'https://comic.naver.com/webtoon/creation'
 
 
 def do_crawling():
-    webtoon_creation_url = 'https://comic.naver.com/webtoon/creation'
+    manager = multiprocessing.Manager()
+    cpu_count = multiprocessing.cpu_count()
+    webtoon = manager.list()
+    pool = Pool(cpu_count)
+    response = pool.map(request_webtoon_list, [webtoon])
+
+    return list(response.pop(0))
+
+
+def request_webtoon_list(webtoon):
     response = requests.get(webtoon_creation_url)
     if response.status_code == 200:
-        request_webtoon_list(response)
+        i = 0
+        finish_soup = BeautifulSoup(response.text, 'html.parser')
 
+        raw_webtoon_list = finish_soup.select('div.thumb > a')  # title칸의 값 모두 긁어오기
 
-def request_webtoon_list(response):
-    i = 0
-    finish_soup = BeautifulSoup(response.text, 'html.parser')
+        for a in raw_webtoon_list:  # 타이틀 전체를 불러와서 정렬
+            if i % 50 == 0:
+                time.sleep(random.uniform(1, 3))
 
-    raw_webtoon_list = finish_soup.select('div.thumb > a')  # title칸의 값 모두 긁어오기
+            i = i + 1
+            url = url_prefix + a['href']
+            title = a['title']
+            title_id = url.split('=')[1]
+            webtoon_dict = {
+                'seriesId': title_id,
+                'title': title,
+                'url': url,
+                'platform': 'Naver'
+            }
+            webtoon_dict.update(request_webtoon_detail(url=url))
+            webtoon.append(webtoon_dict)
+            if i % 5 == 0:
+                print('Index : [%g] ' % i)
 
-    finish_list = []
+        return webtoon
 
-    for a in raw_webtoon_list:  # 타이틀 전체를 불러와서 정렬
-        # time.sleep(random.uniform(1, 3))
-
-        i = i + 1
-        url = url_prefix + a['href']
-        title = a['title']
-        title_id = url.split('=')[1]
-        webtoon_dict = {
-            'seriesId': title_id,
-            'title': title,
-            'url': url,
-            'platform': 'Naver'
-        }
-        finish_list.append(webtoon_dict)
-        webtoon_dict.update(request_webtoon_detail(url=url))
-        if i % 3 == 0:
-            print('Index : [%g] ' % i)
-        # print(str(webtoon_dict['title']) + ' / ' + str(webtoon_dict['age_grade']))
-        if i == 50:
-            print(finish_list)
-            return
+        # # 50개까지만 하고 스탑
+        # if i == 50:
+        #     print(webtoon)
+        #     return webtoon
 
 
 def request_webtoon_detail(url):
