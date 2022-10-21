@@ -24,5 +24,5 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             cd /mnt/storage1/airflow/dags
-            git pull origin master
+            git pull origin main
             git show
