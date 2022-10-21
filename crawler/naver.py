@@ -43,7 +43,7 @@ def request_webtoon_list(webtoon):
             webtoon.append(webtoon_dict)
             if i % 5 == 0:
                 print('Index : [%g] ' % i)
-
+            # Test
         return webtoon
 
         # # 50개까지만 하고 스탑
